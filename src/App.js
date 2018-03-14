@@ -15,7 +15,7 @@ class BooksApp extends Component {
      */
     //showSearchPage: false
     // shelf: "",
-    books: []
+    books: [],
   }
 
   componentDidMount() {
@@ -24,7 +24,6 @@ class BooksApp extends Component {
         books: books,
         // shelf: books.shelf
       });
-      // console.log(books);
     })
   }
 
@@ -57,8 +56,9 @@ class BooksApp extends Component {
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
-            <ListBooks books={this.state.books}/>
-            {/* {console.log(this.state.books)} */}
+            <ListBooks shelfTitle="Currently Reading" books={this.state.books}/>
+            {/* <ListBooks shelfTitle="Want To Read" books={this.state.books}/>
+            <ListBooks shelfTitle="Read" books={this.state.books}/> */}
             <div className="open-search">
               <Link to="/search">Add a book</Link>
             </div>
