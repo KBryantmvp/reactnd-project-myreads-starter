@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import ListBooks from './ListBooks'
+import BooksShelf from './BooksShelf'
 // import Books from './Books'
 import './App.css'
 
@@ -26,7 +26,6 @@ class BooksApp extends Component {
       });
     })
   }
-  
 
   render() {
     return (
@@ -57,9 +56,9 @@ class BooksApp extends Component {
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
-            <ListBooks shelfTitle="Currently Reading" books={this.state.books}/>
-            <ListBooks shelfTitle="Want To Read" books={this.state.books}/>
-            <ListBooks shelfTitle="Read" books={this.state.books}/>
+            <BooksShelf shelfTitle="Currently Reading" books={this.state.books}/>
+            <BooksShelf shelfTitle="Want To Read" books={this.state.books}/>
+            <BooksShelf shelfTitle="Read" books={this.state.books}/>
             <div className="open-search">
               <Link to="/search">Add a book</Link>
             </div>
