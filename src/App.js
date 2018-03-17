@@ -27,7 +27,22 @@ class BooksApp extends Component {
     })
   }
 
+  /**
+   * Formats shelfTitle to look for matches with 'shelf' property from each book
+   * and then display it in the corresponding shelf
+   */
+  makeTitle = (str) => {
+    let myStr = str.split(' ').join('');
+    return myStr.charAt(0).toLowerCase() + myStr.slice(1);
+  }
+
   render() {
+    const shelfTitles = [
+      'Currently Reading',
+      'Want To Read',
+      'Read'
+    ]
+
     return (
       <div className="app">
         <Route path="/search" render={() => (
@@ -56,9 +71,14 @@ class BooksApp extends Component {
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
-            <BooksShelf shelfTitle="Currently Reading" books={this.state.books}/>
-            <BooksShelf shelfTitle="Want To Read" books={this.state.books}/>
-            <BooksShelf shelfTitle="Read" books={this.state.books}/>
+              {shelfTitles.map((shelfTitle, index) => (
+                <BooksShelf 
+                  key={index}
+                  shelfTitle={shelfTitle}
+                  books={this.state.books.filter(book => (
+                    book.shelf === this.makeTitle(shelfTitle)
+                  ))}/>
+              ))}
             <div className="open-search">
               <Link to="/search">Add a book</Link>
             </div>

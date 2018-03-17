@@ -8,7 +8,6 @@ class Book extends Component {
 
   handleChange = (event) => {
     this.setState({selectValue: event.target.value});
-    console.log(this.props.selectValue);
   }
 
   render() {
