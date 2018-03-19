@@ -15,7 +15,6 @@ class BooksApp extends Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     //showSearchPage: false
-    // shelf: "",
     books: [],
   }
 
@@ -36,13 +35,21 @@ class BooksApp extends Component {
     return myStr.charAt(0).toLowerCase() + myStr.slice(1);
   }
 
+  handleBookChange = (book, newShelf) => {
+    BooksAPI.update(book, newShelf).then(() => {
+      BooksAPI.getAll().then((books) => {
+        this.setState({ books })
+      })
+    })
+  }
+
   render() {
     const shelfTitles = [
       'Currently Reading',
       'Want To Read',
       'Read'
     ]
-
+    // console.log(this.state.selectValue)
     return (
       <div className="app">
         <Route path="/search" render={() => (
@@ -77,7 +84,9 @@ class BooksApp extends Component {
                   shelfTitle={shelfTitle}
                   books={this.state.books.filter(book => (
                     book.shelf === this.makeTitle(shelfTitle)
-                  ))}/>
+                  ))}
+                  onBookChange={this.handleBookChange}
+                  />
               ))}
             <div className="open-search">
               <Link to="/search">Add a book</Link>
