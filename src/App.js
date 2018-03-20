@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import BooksShelf from './BooksShelf'
-// import Books from './Books'
+// import Book from './Book'
 import './App.css'
 
 class BooksApp extends Component {
@@ -16,6 +16,8 @@ class BooksApp extends Component {
      */
     //showSearchPage: false
     books: [],
+    query: '',
+    foundBooks: []
   }
 
   componentDidMount() {
@@ -43,13 +45,28 @@ class BooksApp extends Component {
     })
   }
 
+  updateQuery = (query) => {
+    this.setState({ query })
+  }
+
+
   render() {
     const shelfTitles = [
       'Currently Reading',
       'Want To Read',
       'Read'
     ]
+
+    const foundBooks = this.state.foundBooks
     // console.log(this.state.selectValue)
+
+    if (this.state.query) {
+      BooksAPI.search(this.state.query).then((foundBooks) => {
+        console.log(foundBooks)
+        this.setState({ foundBooks })
+      })
+    }
+
     return (
       <div className="app">
         <Route path="/search" render={() => (
@@ -65,11 +82,21 @@ class BooksApp extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
+                <input
+                  type="text"
+                  placeholder="Search by title or author"
+                  value={this.state.query}
+                  onChange={(event) => this.updateQuery(event.target.value)}
+                />
+                {/* {JSON.stringify(this.state.query)} */}
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+                {/* <Book book={(query) => (
+                  BooksAPI.search('drama')
+                )}/> */}
+              </ol>
             </div>
           </div>
         )}/>  

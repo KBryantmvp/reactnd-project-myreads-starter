@@ -19,9 +19,8 @@ class BooksShelf extends Component {
                   <Book
                     key={book.id}
                     book={book}
-                    shelf={shelfTitle}
                     onBookChange={this.props.onBookChange}
-                    />
+                  />
                 ))}
               </ol>
             </div>
