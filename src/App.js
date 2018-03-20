@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
+// import attr from 'react-conditional-attribute';
 import * as BooksAPI from './BooksAPI'
 import BooksShelf from './BooksShelf'
-// import Book from './Book'
+import Book from './Book'
 import './App.css'
 
 class BooksApp extends Component {
@@ -17,13 +18,20 @@ class BooksApp extends Component {
     //showSearchPage: false
     books: [],
     query: '',
+    // shelf: '',
     foundBooks: []
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
+      // books.map(book => (
+      //   this.setState({
+      //     shelf: book.shelf
+      //   })
+      // ))
       this.setState({ 
-        books: books,
+        books: books
+        // shelf: books.shelf
       });
     })
   }
@@ -40,15 +48,35 @@ class BooksApp extends Component {
   handleBookChange = (book, newShelf) => {
     BooksAPI.update(book, newShelf).then(() => {
       BooksAPI.getAll().then((books) => {
-        this.setState({ books })
+        this.setState({
+          books: books,
+          // shelf: newShelf
+        })
       })
     })
   }
 
   updateQuery = (query) => {
     this.setState({ query })
+    if (query) {
+      BooksAPI.search(query).then((foundBooks) => {
+        if (foundBooks.error) {
+          this.setState({ 
+            foundBooks: [] 
+          })
+        } else {
+          // console.log('my found books', foundBooks)
+        this.setState({ foundBooks })
+        }
+      })
+    } else {
+      this.setState({
+        foundBooks: []
+      })
+    }
   }
 
+  
 
   render() {
     const shelfTitles = [
@@ -57,15 +85,10 @@ class BooksApp extends Component {
       'Read'
     ]
 
+    const shelf = this.state.shelf
     const foundBooks = this.state.foundBooks
-    // console.log(this.state.selectValue)
+    // console.log(shelf)
 
-    if (this.state.query) {
-      BooksAPI.search(this.state.query).then((foundBooks) => {
-        console.log(foundBooks)
-        this.setState({ foundBooks })
-      })
-    }
 
     return (
       <div className="app">
@@ -93,9 +116,15 @@ class BooksApp extends Component {
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                {/* <Book book={(query) => (
-                  BooksAPI.search('drama')
-                )}/> */}
+                {foundBooks.map(book => (
+                  // console.log(book);
+                  <Book
+                    key={book.id}
+                    book={book}
+                    // shelf={shelf}
+                    onBookChange={this.handleBookChange}
+                  />
+                ))}
               </ol>
             </div>
           </div>
@@ -109,6 +138,7 @@ class BooksApp extends Component {
                 <BooksShelf 
                   key={index}
                   shelfTitle={shelfTitle}
+                  shelf={shelf}
                   books={this.state.books.filter(book => (
                     book.shelf === this.makeTitle(shelfTitle)
                   ))}

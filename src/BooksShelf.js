@@ -19,6 +19,7 @@ class BooksShelf extends Component {
                   <Book
                     key={book.id}
                     book={book}
+                    // shelf={this.props.shelf}
                     onBookChange={this.props.onBookChange}
                   />
                 ))}
