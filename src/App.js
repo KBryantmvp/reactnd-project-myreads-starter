@@ -24,20 +24,9 @@ class BooksApp extends Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      // books.map(book => (
-      //   this.setState({
-      //     shelf: book.shelf
-      //   })
-      // ))
-      this.setState({ 
+      this.setState({
         books: books,
-        // shelf: books.shelf
       });
-      // this.state.books.map(book => (
-      //   this.setState({
-      //     shelf: book.shelf
-      //   })
-      // ))
       console.log('libros', books)
     })
   }
@@ -57,7 +46,6 @@ class BooksApp extends Component {
       BooksAPI.getAll().then((books) => {
         this.setState({
           books: books,
-          // shelf: newShelf
         })
       })
     })
@@ -68,23 +56,18 @@ class BooksApp extends Component {
     if (query) {
       BooksAPI.search(query).then((foundBooks) => {
         if (foundBooks.error) {
-          this.setState({ 
-            foundBooks: [] 
+          this.setState({
+            foundBooks: []
           })
         } else {
-          // console.log('my found books', foundBooks)
+          this.state.books.forEach(book => {
+            let bookOnShelf = foundBooks.find(result => (
+              result.id === book.id
+            ))
+            if (bookOnShelf)
+              bookOnShelf.shelf = book.shelf
+          })
           this.setState({ foundBooks })
-          for (const book of foundBooks) {
-            if (!book.shelf) {
-              book.shelf = 'none'
-            } else {
-              book.shelf = this.state.shelf
-            }
-          }
-          // foundBooks.map(book => {
-          //   if (!book.shelf)
-          //     book.shelf = 'none'
-          // })
         }
       })
     } else {
@@ -101,7 +84,6 @@ class BooksApp extends Component {
     })
   }
 
-  
 
   render() {
     const shelfTitles = [
@@ -110,10 +92,7 @@ class BooksApp extends Component {
       'Read'
     ]
 
-    // const shelf = this.state.shelf
     const foundBooks = this.state.foundBooks
-    // console.log(shelf)
-
 
     return (
       <div className="app">
@@ -136,7 +115,7 @@ class BooksApp extends Component {
                   value={this.state.query}
                   onChange={(event) => this.updateQuery(event.target.value)}
                 />
-                <button 
+                <button
                   onClick={this.clearText}
                   className="text-remove">
                   Clear text
@@ -151,7 +130,6 @@ class BooksApp extends Component {
                   <Book
                     key={book.id}
                     book={book}
-                    shelf={this.state.shelf}
                     onBookChange={(book, newShelf) => {
                       this.handleBookChange(book, newShelf)
                       history.push('/')
@@ -161,17 +139,17 @@ class BooksApp extends Component {
               </ol>
             </div>
           </div>
-        )}/>  
+        )}/>
         <Route exact path="/" render={() => (
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
               {shelfTitles.map((shelfTitle, index) => (
-                <BooksShelf 
+                <BooksShelf
                   key={index}
                   shelfTitle={shelfTitle}
-                  shelf={this.state.shelf}
+                  // shelf={this.state.shelf}
                   books={this.state.books.filter(book => (
                     book.shelf === this.makeTitle(shelfTitle)
                   ))}

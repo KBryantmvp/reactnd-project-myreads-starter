@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 // import attr from 'react-conditional-attribute';
 
 class Book extends Component {
-/**
- * TODO: Distinguish between shelf state and selectValue state???
- */
   state = {
     selectVal: 'none'
   }
@@ -15,33 +12,19 @@ class Book extends Component {
       this.setState({
         selectVal: this.props.book.shelf
       })
-    } else {
-    //   BooksAPI.update(this.props.book, this.state.selectVal).then(() => {
-    //     console.log('book', this.props.book)
-    //     console.log('selectVal', this.state.selectVal)
-    //   })
     }
+    console.log('entré')
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log('props', prevProps)
-  //   console.log('prevState', prevState)
+  // handleSelect = (newShelf) => {
   //   this.setState({
-  //     shelf: 
+  //     selectVal: newShelf
   //   })
   // }
-
-  handleSelect = (newShelf) => {
-    this.setState({
-      selectVal: newShelf
-    })
-  }
 
 
   render() {
     const book = this.props.book;
-    // const shelf = this.props.shelf;
-    // console.log('Props', this.props);
 
     return (
       <li >
@@ -49,23 +32,23 @@ class Book extends Component {
           <div className="book-top">
             {book.imageLinks ? (
                 <div
-                  className="book-cover" 
-                  style={{ 
-                    width: 128, 
+                  className="book-cover"
+                  style={{
+                    width: 128,
                     height: 193,
                     backgroundImage: `url(${book.imageLinks.smallThumbnail})`
                 }}/>
               ) : (
                 <div
-                  className="book-cover" 
-                  style={{ 
-                    width: 128, 
+                  className="book-cover"
+                  style={{
+                    width: 128,
                     height: 193,
                     textAlign: 'center',
                     // verticalAlign: 'middle'
                     padding: '65px 0'
                   }}>No image available
-                </div>  
+                </div>
               )}
             <div className="book-shelf-changer">
               <select
@@ -73,7 +56,7 @@ class Book extends Component {
                 // value={attr(false, shelf, 'none')}
                 onChange={(event) => {
                   this.props.onBookChange(book, event.target.value);
-                  this.handleSelect(event.target.value)
+                  // this.handleSelect(event.target.value)
                 }}>
                 {/* onChange={(event) => {this.onBookChange(event.target.value)}}> */}
                   <option value="none" disabled>Move to...</option>
