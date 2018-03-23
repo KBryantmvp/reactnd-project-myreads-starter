@@ -18,7 +18,7 @@ class BooksApp extends Component {
     //showSearchPage: false
     books: [],
     query: '',
-    // shelf: '',
+    // shelf: 'none',
     foundBooks: []
   }
 
@@ -30,9 +30,15 @@ class BooksApp extends Component {
       //   })
       // ))
       this.setState({ 
-        books: books
+        books: books,
         // shelf: books.shelf
       });
+      // this.state.books.map(book => (
+      //   this.setState({
+      //     shelf: book.shelf
+      //   })
+      // ))
+      console.log('libros', books)
     })
   }
 
@@ -47,6 +53,7 @@ class BooksApp extends Component {
 
   handleBookChange = (book, newShelf) => {
     BooksAPI.update(book, newShelf).then(() => {
+      book.shelf = newShelf;
       BooksAPI.getAll().then((books) => {
         this.setState({
           books: books,
@@ -66,7 +73,18 @@ class BooksApp extends Component {
           })
         } else {
           // console.log('my found books', foundBooks)
-        this.setState({ foundBooks })
+          this.setState({ foundBooks })
+          for (const book of foundBooks) {
+            if (!book.shelf) {
+              book.shelf = 'none'
+            } else {
+              book.shelf = this.state.shelf
+            }
+          }
+          // foundBooks.map(book => {
+          //   if (!book.shelf)
+          //     book.shelf = 'none'
+          // })
         }
       })
     } else {
@@ -74,6 +92,13 @@ class BooksApp extends Component {
         foundBooks: []
       })
     }
+  }
+
+  clearText = () => {
+    this.setState({
+      query: '',
+      foundBooks: []
+    })
   }
 
   
@@ -85,14 +110,14 @@ class BooksApp extends Component {
       'Read'
     ]
 
-    const shelf = this.state.shelf
+    // const shelf = this.state.shelf
     const foundBooks = this.state.foundBooks
     // console.log(shelf)
 
 
     return (
       <div className="app">
-        <Route path="/search" render={() => (
+        <Route path="/search" render={({ history }) => (
           <div className="search-books">
             <div className="search-books-bar">
               <Link to="/" className="close-search">Close</Link>
@@ -111,6 +136,11 @@ class BooksApp extends Component {
                   value={this.state.query}
                   onChange={(event) => this.updateQuery(event.target.value)}
                 />
+                <button 
+                  onClick={this.clearText}
+                  className="text-remove">
+                  Clear text
+                </button>
                 {/* {JSON.stringify(this.state.query)} */}
               </div>
             </div>
@@ -121,8 +151,11 @@ class BooksApp extends Component {
                   <Book
                     key={book.id}
                     book={book}
-                    // shelf={shelf}
-                    onBookChange={this.handleBookChange}
+                    shelf={this.state.shelf}
+                    onBookChange={(book, newShelf) => {
+                      this.handleBookChange(book, newShelf)
+                      history.push('/')
+                    }}
                   />
                 ))}
               </ol>
@@ -138,7 +171,7 @@ class BooksApp extends Component {
                 <BooksShelf 
                   key={index}
                   shelfTitle={shelfTitle}
-                  shelf={shelf}
+                  shelf={this.state.shelf}
                   books={this.state.books.filter(book => (
                     book.shelf === this.makeTitle(shelfTitle)
                   ))}

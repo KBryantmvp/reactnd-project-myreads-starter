@@ -1,22 +1,46 @@
 import React, { Component } from 'react';
+// import * as BooksAPI from './BooksAPI'
 // import attr from 'react-conditional-attribute';
 
 class Book extends Component {
+/**
+ * TODO: Distinguish between shelf state and selectValue state???
+ */
+  state = {
+    selectVal: 'none'
+  }
 
-  // state = {
-  //   shelf: ''
-  // }
+  componentDidMount() {
+    if (this.props.book.shelf) {
+      this.setState({
+        selectVal: this.props.book.shelf
+      })
+    } else {
+    //   BooksAPI.update(this.props.book, this.state.selectVal).then(() => {
+    //     console.log('book', this.props.book)
+    //     console.log('selectVal', this.state.selectVal)
+    //   })
+    }
+  }
 
-  // onBookChange = (newShelf) => {
-  //   // console.log(event)
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('props', prevProps)
+  //   console.log('prevState', prevState)
   //   this.setState({
-  //     shelf: newShelf
+  //     shelf: 
   //   })
   // }
 
+  handleSelect = (newShelf) => {
+    this.setState({
+      selectVal: newShelf
+    })
+  }
+
+
   render() {
     const book = this.props.book;
-    // const shelf = this.state.shelf;
+    // const shelf = this.props.shelf;
     // console.log('Props', this.props);
 
     return (
@@ -45,9 +69,12 @@ class Book extends Component {
               )}
             <div className="book-shelf-changer">
               <select
-                value={book.shelf}
-                // value={attr(book.shelf, book.shelf, 'none')}
-                onChange={(event) => {this.props.onBookChange(book, event.target.value)}}>
+                value={this.state.selectVal}
+                // value={attr(false, shelf, 'none')}
+                onChange={(event) => {
+                  this.props.onBookChange(book, event.target.value);
+                  this.handleSelect(event.target.value)
+                }}>
                 {/* onChange={(event) => {this.onBookChange(event.target.value)}}> */}
                   <option value="none" disabled>Move to...</option>
                   <option value="currentlyReading">Currently Reading</option>
