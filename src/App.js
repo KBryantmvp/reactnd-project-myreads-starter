@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
-// import attr from 'react-conditional-attribute';
 import * as BooksAPI from './BooksAPI'
 import BooksShelf from './BooksShelf'
 import Book from './Book'
@@ -15,10 +14,8 @@ class BooksApp extends Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    //showSearchPage: false
     books: [],
     query: '',
-    // shelf: 'none',
     foundBooks: []
   }
 
@@ -27,7 +24,6 @@ class BooksApp extends Component {
       this.setState({
         books: books,
       });
-      console.log('libros', books)
     })
   }
 
@@ -38,7 +34,7 @@ class BooksApp extends Component {
   makeTitle = (str) => {
     let myStr = str.split(' ').join('');
     return myStr.charAt(0).toLowerCase() + myStr.slice(1);
-  }
+  };
 
   handleBookChange = (book, newShelf) => {
     BooksAPI.update(book, newShelf).then(() => {
@@ -49,7 +45,7 @@ class BooksApp extends Component {
         })
       })
     })
-  }
+  };
 
   updateQuery = (query) => {
     this.setState({ query })
@@ -60,10 +56,14 @@ class BooksApp extends Component {
             foundBooks: []
           })
         } else {
+          // For each book already on a shelf, check if it is one of 
+          // the books returned from the search
           this.state.books.forEach(book => {
             let bookOnShelf = foundBooks.find(result => (
               result.id === book.id
             ))
+            // If the book is already on a shelf, then assign 
+            // the shelf property to the book
             if (bookOnShelf)
               bookOnShelf.shelf = book.shelf
           })
@@ -75,14 +75,14 @@ class BooksApp extends Component {
         foundBooks: []
       })
     }
-  }
+  };
 
   clearText = () => {
     this.setState({
       query: '',
       foundBooks: []
     })
-  }
+  };
 
 
   render() {
@@ -120,18 +120,17 @@ class BooksApp extends Component {
                   className="text-remove">
                   Clear text
                 </button>
-                {/* {JSON.stringify(this.state.query)} */}
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
                 {foundBooks.map(book => (
-                  // console.log(book);
                   <Book
                     key={book.id}
                     book={book}
                     onBookChange={(book, newShelf) => {
                       this.handleBookChange(book, newShelf)
+                      //Return to home page after assigning a shelf to a book
                       history.push('/')
                     }}
                   />
@@ -149,7 +148,6 @@ class BooksApp extends Component {
                 <BooksShelf
                   key={index}
                   shelfTitle={shelfTitle}
-                  // shelf={this.state.shelf}
                   books={this.state.books.filter(book => (
                     book.shelf === this.makeTitle(shelfTitle)
                   ))}
